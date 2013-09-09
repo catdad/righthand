@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+	<title>Right Click demo</title>
+	
+	<style>
+		.menu{
+			position: fixed;
+			width: 200px;
+			border: 1px solid #d5d5d5;
+			border-radius: 2px;
+			background: #fafafa;
+			
+			font-size: .9em;
+			font-family: sans-serif;
+			
+			box-shadow: 0px 4px 2px -2px rgba(0,0,0,.15);
+		}
+		
+		.menu .item{
+			padding: 3px 3px 3px 20px;
+			cursor: pointer;
+		}
+		.menu .item:hover{
+			background: #e5e5e5; 
+			background-image: -webkit-gradient(
+				linear, left top, right top,
+				color-stop(0, black),
+				color-stop(.01, black),
+				color-stop(.01, #e5e5e5),
+				color-stop(1, #e5e5e5)
+			);
+		
+		}
+		
+		.menu.hidden{ display: none; }
+	</style>
+</head>
+<body>
+	<button onclick='test()'>Button</button>
+	<script>
+		var c = {
+			debug: true,
+			log: function(msg){
+				if (this.debug) console.log.apply(console, arguments);
+			}
+		}
+		
+		function test(){
+			c.log('I got clicked');
+		}
+	</script>
+	<script>
+		function divver(){ return document.createElement('div'); }
+		
+		function Menu(){
+			var menu = divver();
+			menu.className = "menu";
+			
+			//add functions
+			menu.items = [{
+				display: "First item",
+				event: function(ev){
+					c.log(ev);
+				}
+			},{
+				display: "Second item",
+				event: function(ev){
+					c.log(ev);
+				}
+			}];
+			
+			function appendItem(item){
+				var div = divver();
+				div.className = "item";
+				div.innerHTML = item.display;
+				//add event action
+				div.onclick = function(ev){
+					c.log('menu item event');
+					//make sure to close menu
+					menu.hide();
+					//execute item event
+					item.event(ev);
+				}
+				//add div to the menu
+				menu.appendChild(div);
+			}
+			
+			for (i in menu.items){ appendItem(menu.items[i]); }
+						
+			menu.show = function show(){
+				this.classList.remove('hidden');
+				
+				var position = function(){
+					var e = window.event;
+					//click location
+					var y = e.y || e.pageY || e.offsetY;
+					var x = e.x || e.pageX || e.offsetX;
+					c.log({x:x, y:y});
+					
+					//window frame
+					var frameX = window.innerWidth;
+					var frameY = window.innerHeight;
+					
+					//menu dimensions
+					var menuY = menu.offsetHeight || menu.clientHeight;
+					var menuX = menu.offsetWidth || menu.clientWidth;
+					
+					//check that menu does not go off screen
+					if ((x+menuX) > frameX) x = frameX - menuX;
+					if ((y+menuY) > frameY) y = y - menuY;
+					
+					//set menu position
+					menu.style.left = x + 'px';
+					menu.style.top = y + 'px';
+				}
+				position();
+			}
+			menu.hide = function hide(ev){
+				this.classList.add('hidden');
+			}
+			return menu;
+		}
+		
+		var menu = new Menu();
+		
+		function kill(ev){
+			if(ev) {
+				if (ev.stopPropagation) ev.stopPropagation();
+				if (ev.preventDefault) ev.preventDefault();
+				if (ev.preventCapture) ev.preventCapture();
+				if (ev.preventBubble) ev.preventBubble();
+				
+				// just in case
+				return false;
+			}
+		}
+		
+		function showMenu(ev){
+			//kill event
+			kill(ev);
+			
+			menu.show();
+			
+			document.body.appendChild(menu);
+		}
+		
+		function hideMenu(){
+			menu.hide();
+		}
+		
+		document.addEventListener("mousedown", mouseDown);
+		//document.onmousedown = mouseDown;
+		document.oncontextmenu = kill;
+		function mouseDown(ev) {
+			//righClick
+			if (ev.which === 3) showMenu(ev);
+			else if (ev.target.className === "item") c.log('menu item clicked');
+			else hideMenu(ev);
+		}
+	</script>
+</body>
+</html>
