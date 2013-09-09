@@ -19,5 +19,22 @@
 		}
 	</script>
 	<script src="menu.js"></script>
+	<script>
+		//create menu items
+		var items = [{
+			display: "First item",
+			event: function(ev){
+				c.log(ev);
+			}
+		},{
+			display: "Second item",
+			event: function(ev){
+				c.log(ev);
+			}
+		}];
+		
+		//initialize
+		//menu({items: items});
+	</script>
 </body>
 </html>
