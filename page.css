@@ -28,4 +28,10 @@
 
 }
 
+.menu .divider{
+	height: 1px;
+	background: #e5e5e5;
+	margin: 2px 0;
+}
+
 .menu.hidden{ display: none; }

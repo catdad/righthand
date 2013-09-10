@@ -31,10 +31,17 @@
 			event: function(ev){
 				c.log(ev);
 			}
+		},{
+			display: menuItems.divider
+		},{
+			display: "Special item",
+			event: function(ev){
+				c.log(ev);
+			}
 		}];
 		
 		//initialize
-		//menu({items: items});
+		menu({items: items});
 	</script>
 </body>
 </html>

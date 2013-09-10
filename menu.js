@@ -29,6 +29,13 @@
 		menu.innerHTML = "";
 		
 		function appendItem(item){
+			if (item.display == menuItems.divider){
+				menu.appendChild(item.display);
+				return;
+			}
+			
+			console.log(item.display);
+			
 			var div = divver();
 			div.className = "item";
 			div.innerHTML = item.display;
@@ -58,7 +65,6 @@
 		});
 		//document.onmousedown = mouseDown;
 		document.oncontextmenu = kill;
-		
 	}
 	
 	menu.show = function show(){
@@ -92,7 +98,7 @@
 	menu.hide = function hide(ev){
 		this.classList.add('hidden');
 	}
-
+	
 	function showMenu(ev){
 		//kill event
 		kill(ev);
@@ -102,4 +108,13 @@
 	function hideMenu(){ menu.hide(); }
 
 	window.menu = Constructor;
+	
+	var menuItems = window.menuItems = {
+		divider: function(){
+			var div = divver();
+			div.className = "divider";
+			div.innerHTML = "&nbsp;";
+			return div;
+		}()
+	}
 })();
