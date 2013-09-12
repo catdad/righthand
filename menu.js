@@ -41,11 +41,11 @@
 			div.innerHTML = item.display;
 			//add event action
 			div.onclick = function(ev){
-				c.log('menu item event');
+				console.log('menu item event');
 				//make sure to close menu
 				menu.hide();
 				//execute item event
-				item.event(ev);
+				item.event.apply(menu.original.target, [ev]);
 			}
 			//add div to the menu
 			menu.appendChild(div);
@@ -55,19 +55,23 @@
 			for (i in options.items){ appendItem(options.items[i]); }
 		}
 		
-		
 		//activate menu and event listeners
 		document.addEventListener("mousedown", function mouseDown(ev){
 			//righClick
 			if (ev.which === 3) showMenu(ev);
-			else if (ev.target.className === "item") c.log('menu item clicked');
+			else if (ev.target.className === "item") console.log('menu item clicked');
 			else hideMenu(ev);
 		});
 		//document.onmousedown = mouseDown;
 		document.oncontextmenu = kill;
 	}
 	
-	menu.show = function show(){
+	menu.target = null;
+	menu.show = function show(ev){
+		//set global event target
+		window.mything = ev;
+		menu.original = ev;
+		
 		this.classList.remove('hidden');
 		
 		var position = function(){
@@ -75,7 +79,7 @@
 			//click location
 			var y = e.y || e.pageY || e.offsetY;
 			var x = e.x || e.pageX || e.offsetX;
-			c.log({x:x, y:y});
+			console.log({x:x, y:y});
 			
 			//window frame
 			var frameX = window.innerWidth;
@@ -97,12 +101,15 @@
 	}
 	menu.hide = function hide(ev){
 		this.classList.add('hidden');
+		
+		//reset global menu target
+		menu.target = null;
 	}
 	
 	function showMenu(ev){
 		//kill event
 		kill(ev);
-		menu.show();
+		menu.show(ev);
 	}
 
 	function hideMenu(){ menu.hide(); }

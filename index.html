@@ -3,8 +3,23 @@
 <head>
 	<title>Right Click demo</title>
 	<link rel="stylesheet" type="text/css" href="page.css">
+	
+	<style>
+		div.squares{
+			display: inline-block;
+			width: 200px;
+			height: 200px;
+			margin: 20px;
+		}
+		div.squares#div1{ background: pink; }
+		div.squares#div2{ background: yellow; }
+		div.squares#div3{ background: teal; }
+	</style>
 </head>
 <body>
+	<div id="div1" class="squares" data-x="pink"></div>
+	<div id="div2" class="squares" data-x="yellow"></div>
+	<div id="div3" class="squares" data-x="teal"></div>
 	<button onclick='test()'>Button</button>
 	<script>
 		var c = {
@@ -24,19 +39,26 @@
 		var items = [{
 			display: "First item",
 			event: function(ev){
-				c.log(ev);
+				c.log("First Item ", ev);
 			}
 		},{
 			display: "Second item",
 			event: function(ev){
-				c.log(ev);
+				c.log("Second Item ", ev);
 			}
 		},{
 			display: menuItems.divider
 		},{
 			display: "Special item",
 			event: function(ev){
-				c.log(ev);
+				c.log("Specal Item ", ev);
+			}
+		},{
+			display: "color",
+			event: function(ev){
+				c.log(ev.target);
+				c.log("I am ", this.id || "null");
+				window.thing = this;
 			}
 		}];
 		
