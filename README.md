@@ -3,7 +3,7 @@ Right Hand JS
 
 Right Hand is a JavaScript library for creating app-wide context menus.
 
-#TL;DR
+##TL;DR
 
 	menu({
 		{
@@ -19,13 +19,15 @@ Right Hand is a JavaScript library for creating app-wide context menus.
 		}
 	]);
 	
-#Initialization
+##Initialization
 
 The takes one argument, an array of menu items. It is initialized like this:
 
 	menu(itemsArray);
 	
-#Menu Items
+_Note: an array is used so that the order of the menu items is preserved. They will appear in the menu in the same order that they are placed inside the array._
+	
+##Menu Items
 
 Menu items require a `display` -- the string seen in the menu -- and `event` -- the function to execute -- properties.
 
@@ -48,3 +50,21 @@ The event function has access to both its own click event, and the click event t
 Menu items have the optional `condition` variable, for menu items that are only needed at specific times. Three different options are available.
 - A string containing a CSS selector will only show that menu option when right-clicking on a matching element.
 - A function, return `true` or `false`. This function gets the right-click event as an argument.
+- Leaving this out causes the item to always show on the menu.
+
+####Full item object
+
+	var item = {
+		condition: function(ev){
+			return (ev.target.style.backgroundColor === "yellow") ? true:false;
+		},
+		display: "Change yellow to orange",
+		event: function(ev){
+			//do some things
+			this.target.style.backgroundColor = "orange";
+		}
+	}
+
+##License
+
+This project is licensed under the MIT X11 License. Please use, adapt, and modify this project to your heart's content. Link back to this page wherever you can.
