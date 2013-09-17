@@ -7,7 +7,7 @@ _Note: This project is still in the very early stages. At this point, I reserve 
 
 ##TL;DR
 
-	menu({
+	menu([
 		{
 			display: "First item",
 			event: function(ev){
@@ -23,7 +23,7 @@ _Note: This project is still in the very early stages. At this point, I reserve 
 	
 ##Initialization
 
-The takes one argument, an array of menu items. It is initialized like this:
+The initializing function takes one argument, an array of menu items. It is initialized like this:
 
 	menu(itemsArray);
 	
@@ -49,7 +49,7 @@ The event function has access to both its own click event, and the click event t
 	}
 	...
 	
-Menu items have the optional `condition` variable, for menu items that are only needed at specific times. Three different options are available.
+Menu items have an optional `condition` variable, for menu items that are only needed at specific times. Three different options are available.
 - A string containing a CSS selector will only show that menu option when right-clicking on a matching element.
 - A function, return `true` or `false`. This function gets the right-click event as an argument.
 - Leaving this out causes the item to always show on the menu.
