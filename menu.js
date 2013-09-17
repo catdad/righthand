@@ -13,8 +13,14 @@
 			return false;
 		}
 	}
+	
+	window.debug = function debug(){
+		if (console && console.log)
+			console.log.apply(console, arguments);
+	}
 	//end helpers
 	
+	//init menu
 	//global menu -- allow only one in page
 	var menu = divver();
 	menu.className = "menu";
@@ -24,57 +30,126 @@
 	//place menu in document
 	document.body.appendChild(menu);
 	
+	//init menu function
 	var Constructor = function(options){
 		//reset menu
 		menu.innerHTML = "";
 		
-		function appendItem(item){
-			if (item.display == menuItems.divider){
-				menu.appendChild(item.display);
-				return;
-			}
-			
-			console.log(item.display);
-			
-			var div = divver();
-			div.className = "item";
-			div.innerHTML = item.display;
-			//add event action
-			div.onclick = function(ev){
-				console.log('menu item event');
-				//make sure to close menu
-				menu.hide();
-				//execute item event
-				item.event.apply(menu.original.target, [ev]);
-			}
-			//add div to the menu
-			menu.appendChild(div);
-		}
-		
+		//creates menu entry
+		//TODO cross browser
 		if (options.items){
-			for (i in options.items){ appendItem(options.items[i]); }
+			for (i in options.items){
+				menu.store.add(options.items[i]);
+			}
 		}
 		
 		//activate menu and event listeners
+		//TODO crossbrowser
 		document.addEventListener("mousedown", function mouseDown(ev){
 			//righClick
 			if (ev.which === 3) showMenu(ev);
 			else if (ev.target.className === "item") console.log('menu item clicked');
 			else hideMenu(ev);
 		});
-		//document.onmousedown = mouseDown;
+		
+		//kill contectmenu events
 		document.oncontextmenu = kill;
 	}
+		
+	//menu.trigger = null;
 	
-	menu.target = null;
+	//add menu store
+	menu.store = {
+		items: [],
+		add: function addMenuExtension(item){
+			//parse string as DOM selector
+			var parse = function(c){
+				return function(){ return true; }
+			}
+			
+			//create conditional function
+			switch (typeof item.condition){
+				case "function":
+					item.active = item.condition;
+					break;
+				case "string":
+					item.active = parse(item.condition);
+					break;
+				default:
+					item.active = function always(){ return true; };
+					break;
+			}
+			
+			//test for premade items
+			if (item.display == menuItems.divider){
+				//display is the actual DOM
+				item.DOM = item.display;
+			}
+			else{
+				//create DOM element for item
+				item.DOM = divver();
+				item.DOM.className = "item";
+				item.DOM.innerHTML = item.display;
+				//create onclick handler
+				item.DOM.onclick = function(ev){
+					//make sure to close menu
+					menu.hide();
+					//execute item event
+					if (item.event && typeof item.event === "function")
+						item.event.call(menu.trigger, ev);
+					else debug(item.display + " event not set");
+				}
+			}
+			
+			this.items.push(item);
+			
+			//TODO temp
+			return item;
+		},
+		//TODO remove function
+		remove: function removeMenuExtension(condition){
+			if (condition in this.items) return true;
+			else return false;
+		},
+		//TODO find function
+		find: function findMenuExtention(){
+			
+		},
+		each: function eachItem(callback, scope){
+			//TODO use GitHub each function
+			for (i in this.items){
+				callback.call(scope, this.items[i], i, this.items);
+			}
+		}
+	}
+	
+	//devtools
+	window.store = menu.store;
+	
+	//add menu methods
+	menu.create = function createMenu(ev){
+		//clear previous
+		menu.innerHTML = "";
+		
+		//adds view to menu
+		function appendItem(item){
+			//add div to the menu
+			if ( item.active() )
+				menu.appendChild(item.DOM);
+		}
+		
+		menu.store.each(appendItem);
+		
+		return this;
+	}
 	menu.show = function show(ev){
 		//set global event target
-		window.mything = ev;
-		menu.original = ev;
+		menu.trigger = ev;
 		
 		this.classList.remove('hidden');
 		
-		var position = function(){
+		//correctly position menu
+		(function positionMenu(){
 			var e = window.event;
 			//click location
 			var y = e.y || e.pageY || e.offsetY;
@@ -96,27 +171,27 @@
 			//set menu position
 			menu.style.left = x + 'px';
 			menu.style.top = y + 'px';
-		}
-		position();
+		})();
+		
+		return this;
 	}
 	menu.hide = function hide(ev){
 		this.classList.add('hidden');
-		
-		//reset global menu target
-		menu.target = null;
+		return this;
 	}
 	
+	//wrapper functions -- makes it easier to do more than one thing
 	function showMenu(ev){
 		//kill event
 		kill(ev);
-		menu.show(ev);
+		menu.create(ev).show(ev);
 	}
-
 	function hideMenu(){ menu.hide(); }
 
+	//attach Constructor to global scope
 	window.menu = Constructor;
-	
-	var menuItems = window.menuItems = {
+	//helper menu items
+	var menuItems = window.menu.items = {
 		divider: function(){
 			var div = divver();
 			div.className = "divider";
@@ -124,4 +199,6 @@
 			return div;
 		}()
 	}
+	
+	console.log(menuItems);
 })();

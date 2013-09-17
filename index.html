@@ -30,7 +30,7 @@
 		}
 		
 		function test(){
-			c.log('I got clicked');
+			console.log('I got clicked');
 		}
 	</script>
 	<script src="menu.js"></script>
@@ -39,26 +39,35 @@
 		var items = [{
 			display: "First item",
 			event: function(ev){
-				c.log("First Item ", ev);
+				console.log("First Item ", ev);
 			}
 		},{
 			display: "Second item",
 			event: function(ev){
-				c.log("Second Item ", ev);
+				console.log("Second Item ", ev);
 			}
 		},{
-			display: menuItems.divider
+			display: menu.items.divider
 		},{
-			display: "Special item",
+			display: "What am I?",
 			event: function(ev){
-				c.log("Specal Item ", ev);
+				console.log("I am ", this.target.id || "null");
 			}
 		},{
-			display: "color",
+			condition: "#div1",
+			display: "Pink square",
 			event: function(ev){
-				c.log(ev.target);
-				c.log("I am ", this.id || "null");
-				window.thing = this;
+				console.log("case: DOM element");
+			}
+		},{
+			condition: function(){ 
+				var b = Date.now()%2 === 0;
+				console.log(b);
+				return (b) ? true:false;
+			},
+			display: "Custom condition",
+			event: function(ev){
+				console.log("case: custom function");
 			}
 		}];
 		
