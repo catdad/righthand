@@ -3,6 +3,8 @@ Right Hand JS
 
 Right Hand is a JavaScript library for creating app-wide context menus.
 
+_Note: This project is still in the very early stages. At this point, I reserve the right to break any and all parts of this API without notice. I will update this README as I make changes, and remove this message when I reach a stable version._
+
 ##TL;DR
 
 	menu({
