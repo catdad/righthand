@@ -56,7 +56,8 @@ Menu items have the optional `condition` variable, for menu items that are only 
 
 	var item = {
 		condition: function(ev){
-			return (ev.target.style.backgroundColor === "yellow") ? true:false;
+			return (ev.target.style.backgroundColor === "yellow")
+				? true:false;
 		},
 		display: "Change yellow to orange",
 		event: function(ev){
