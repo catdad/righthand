@@ -134,7 +134,7 @@
 		//adds view to menu
 		function appendItem(item){
 			//add div to the menu
-			if ( item.active() )
+			if ( item.active.call(null, ev) )
 				menu.appendChild(item.DOM);
 		}
 		
